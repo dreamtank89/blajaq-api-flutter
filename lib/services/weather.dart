@@ -1,4 +1,31 @@
+import 'package:belajar_api_flutter/services/location.dart';
+import 'package:belajar_api_flutter/services/networking.dart';
+
+const String myKey = '3e0f4a03c9a7ae918e45cbaef268f978';
+const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
+
 class WeatherModel {
+  Future<dynamic> getCityWeather(String cityName) async {
+    NetworkHelper networkHelper = NetworkHelper(
+        '$openWeatherMapURL?q=$cityName&appid=$myKey&units=metric');
+
+    var weatherData = await networkHelper.getData();
+    return weatherData;
+  }
+
+  Future<dynamic> getLocationWeather() async {
+    Location location = Location();
+    await location.getCurrentLocation();
+
+    NetworkHelper network = NetworkHelper(
+      '$openWeatherMapURL?lat=${location.latitude}&lon=${location.longitude}&appid=$myKey&units=metric',
+    );
+
+    var weatherData = await network.getData();
+
+    return weatherData;
+  }
+
   String getWeatherIcon(int condition) {
     if (condition < 300) {
       return '🌩';
